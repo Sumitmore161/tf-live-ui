@@ -1,9 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Bell, Calendar, Clock, MapPin, Ticket, ArrowRight } from "lucide-react"
 import { TravelPackage, EventType, StatusType } from "@/types/travelPackageType"
+import { IMAGES } from "@/constants/Images"
 
 const eventTypeIcons: Record<string, string> = {
     CONCERT: "🎤",
@@ -29,6 +32,7 @@ interface TravelPackageCardProps {
 }
 
 export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardProps) {
+    const [imageError, setImageError] = useState(false);
     const Icon = pkg.ctaTitle === "Book Now" ? Ticket : Bell;
     
     // Calculate date range from start_date and end_date
@@ -40,15 +44,22 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
         day: 'numeric', 
         year: 'numeric' 
     })}`;
+
+    // Get fallback image based on category
+    const fallbackImage = IMAGES[pkg.category as keyof typeof IMAGES] || IMAGES.CONCERT;
+    const imageSrc = (imageError || !pkg.image_url) ? fallbackImage : pkg.image_url;
+
     return (
         <article className="group relative flex h-[442px] w-[300px] shrink-0 flex-col overflow-hidden rounded-xl bg-card transition-transform duration-300 hover:scale-[1.02]">
             {/* Image Container */}
             <div className="relative h-[200px] overflow-hidden">
                 
-                <img
-                    src={pkg.image_url || "https://placehold.co/600x400/png"}
+                <Image
+                    src={imageSrc}
                     alt={pkg.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    onError={() => setImageError(true)}
                 />
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent" />

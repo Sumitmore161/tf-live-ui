@@ -10,10 +10,10 @@ const Header = () => {
 
   const navLinks = [
     { name: 'Home', href: '/', active: true },
-    { name: 'Explore Events', href: '#' },
-    { name: 'Trending', href: '#' },
-    { name: 'destinations', href: '#' },
-    { name: 'upcoming', href: '#' },
+    { name: 'Explore Events', href: '/search' },
+    { name: 'Trending', href: '/search' },
+    { name: 'destinations', href: '/search' },
+    { name: 'upcoming', href: '/search' },
   ]
 
   const [activeLink, setActiveLink] = useState('Home')

@@ -19,17 +19,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+ type EventType = "CONCERT" | "RACING" | "SPORTS";
 interface ItineraryDialogProps {
   toCity: string;
+  eventType: EventType;
 }
 
-export function ItineraryDialog({ toCity }: ItineraryDialogProps) {
+export function ItineraryDialog({ toCity, eventType }: ItineraryDialogProps) {
   const router = useRouter();
   const [fromCity, setFromCity] = useState("");
   const [days, setDays] = useState("3");
   const [travelers, setTravelers] = useState("2");
-  const [eventType, setEventType] = useState("RACING");
 
   const handleGenerate = () => {
     const params = new URLSearchParams({
@@ -87,7 +87,7 @@ export function ItineraryDialog({ toCity }: ItineraryDialogProps) {
           </div>
           <div className="grid gap-2">
             <Label>Event Type</Label>
-            <Select onValueChange={setEventType} defaultValue={eventType}>
+            <Select disabled={true} defaultValue={eventType}>
               <SelectTrigger>
                 <SelectValue placeholder="Select event type" />
               </SelectTrigger>

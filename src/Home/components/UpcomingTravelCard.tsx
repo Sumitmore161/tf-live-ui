@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Bell, Calendar, Clock, MapPin, Ticket, ArrowRight } from "lucide-react"
 import { TravelPackage, EventType, StatusType } from "@/types/travelPackageType"
 
-const eventTypeIcons: Record<EventType, string> = {
-    concert: "🎤",
-    racing: "🏎️",
-    sports: "🏏",
+const eventTypeIcons: Record<string, string> = {
+    CONCERT: "🎤",
+    RACING: "🏎️",
+    SPORTS: "🏏",
+    THEATRE: "🎭",
 }
 
 const statusLabels: Record<StatusType, string> = {
@@ -29,12 +30,23 @@ interface TravelPackageCardProps {
 
 export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardProps) {
     const Icon = pkg.ctaTitle === "Book Now" ? Ticket : Bell;
+    
+    // Calculate date range from start_date and end_date
+    const dateRange = `${new Date(pkg.start_date).toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+    })} - ${new Date(pkg.end_date).toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric' 
+    })}`;
+    
     return (
         <article className="group relative flex h-[542px] w-[300px] shrink-0 flex-col overflow-hidden rounded-xl bg-card transition-transform duration-300 hover:scale-[1.02]">
             {/* Image Container */}
             <div className="relative h-[200px] overflow-hidden">
                 <img
-                    src={pkg.image || "https://placehold.co/600x400/png"}
+                    src={pkg.image_url || "https://placehold.co/600x400/png"}
                     alt={pkg.title}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
@@ -42,15 +54,17 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
                 <div className="absolute inset-0 bg-gradient-to-t from-card via-card/5 to-transparent" />
 
                 {/* Status Tag */}
-                <span
-                    className={`absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusStyles[pkg.status]}`}
-                >
-                    {statusLabels[pkg.status]}
-                </span>
+                {/* {pkg.status && (
+                    <span
+                        className={`absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusStyles[pkg.status]}`}
+                    >
+                        {statusLabels[pkg.status]}
+                    </span>
+                )} */}
 
                 {/* Event Type Icon */}
                 <span className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-secondary/80 text-lg backdrop-blur-sm">
-                    {eventTypeIcons[pkg.eventType]}
+                    {eventTypeIcons[pkg.category] || "🎫"}
                 </span>
             </div>
 
@@ -72,7 +86,7 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
                 {/* Date */}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="h-4 w-4" aria-hidden="true" />
-                    <span>{pkg.dateRange}</span>
+                    <span>{dateRange}</span>
                 </div>
 
                 {/* Price and Duration */}
@@ -82,13 +96,15 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
                             From
                         </p>
                         <p className="text-lg font-bold text-primary">
-                            ₹{pkg.startingPrice.toLocaleString("en-IN")}*
+                            ₹{(pkg.current_price || 0).toLocaleString("en-IN")}*
                         </p>
                     </div>
-                    <div className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5">
-                        <Clock className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-                        <span className="text-sm font-medium text-foreground">{pkg.duration}</span>
-                    </div>
+                    {pkg.duration && (
+                        <div className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5">
+                            <Clock className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+                            <span className="text-sm font-medium text-foreground">{pkg.duration}</span>
+                        </div>
+                    )}
                 </div>
 
                 {/* CTA Button */}
@@ -97,7 +113,6 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
                         variant="outline"
                         className="w-full gap-2 border-primary/30 text-foreground hover:bg-primary hover:text-primary-foreground bg-transparent"
                     >
-                        {/* 2. Render the dynamic icon */}
                         <Icon className="h-4 w-4" aria-hidden="true" />
                         <span>{pkg.ctaTitle || "Notify Me"}</span>
                     </Button>

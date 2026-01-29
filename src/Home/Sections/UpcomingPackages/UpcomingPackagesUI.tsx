@@ -35,42 +35,27 @@ export default function UpcomingTravel({ events }: UpcomingTravelProps) {
   const twoMonthsFromNow = new Date(today)
   twoMonthsFromNow.setDate(today.getDate() + 60)
 
-  // Filter and sort events within 1-2 month window (30-60 days from today)
-  const filteredEvents = events
+  // Filter and sort events within 1-2 month window (30-60 days from today) and by category
+  const displayPackages = events
     .filter((event) => {
       const startDate = new Date(event.start_date)
-      return startDate >= oneMonthFromNow && startDate <= twoMonthsFromNow
+      const isInDateRange = startDate >= oneMonthFromNow && startDate <= twoMonthsFromNow
+      
+      // Category filter
+      const allowedCategories = ['RACING', 'SPORTS', 'CONCERT', 'THEATRE']
+      const matchesCategory = selectedCategory === 'ALL' 
+        ? allowedCategories.includes(event.category)
+        : event.category === selectedCategory
+      
+      return isInDateRange && matchesCategory
     })
     .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
-
-  // Map filtered events to display format
-  const displayPackages = filteredEvents.map((event) => {
-    const startDateObj = new Date(event.start_date);
-const endDateObj = new Date(event.end_date);
-
-const dateRange = `${startDateObj.toLocaleDateString('en-US', { 
-  month: 'short', 
-  day: 'numeric' 
-})} - ${endDateObj.toLocaleDateString('en-US', { 
-  month: 'long', 
-  day: 'numeric', 
-  year: 'numeric' 
-})}`;
-    // console.log('Mapping event to display package dateRange:', dateRange)
-    return {
-      id: event.id,
-      title: event.title,
-      image: event.image_url || "https://placehold.co/600x400/png",
-      city: event.city,//for the next 60 days 
-      country: event.country,
-      eventType: event.category.toLowerCase(),
-      dateRange: dateRange,
-      startingPrice: event.current_price,
-      duration: event.duration,
-      status: "high-demand" as const,
-      ctaTitle: "Book Now",
-    }
-  })
+    .map((event) => ({
+      ...event,
+      status: event.status || "high-demand",
+      ctaTitle: event.ctaTitle || "Book Now",
+      duration: event.duration || "4D / 3N",
+    }))
 
   const scroll = (direction: "left" | "right") => {
     if (!scrollContainerRef.current) return
@@ -121,7 +106,21 @@ const dateRange = `${startDateObj.toLocaleDateString('en-US', {
           </div>
         </div>
 
-        {/* Carousel */}
+        {/* Category Filter Buttons */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <Button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              variant={selectedCategory === category ? "default" : "outline"}
+              className="rounded-full px-4 py-2 text-sm font-medium transition-all"
+            >
+              {category}
+            </Button>
+          ))}
+        </div>
+
+        {/* Horizontal Scroll Grid */}
         <div
           ref={scrollContainerRef}
           className="flex gap-6 overflow-x-auto py-8 px-4 sm:mx-0 sm:px-0 no-scrollbar snap-x snap-mandatory"
@@ -133,7 +132,7 @@ const dateRange = `${startDateObj.toLocaleDateString('en-US', {
           }}
         >
           {displayPackages.map((pkg) => (
-            <div key={pkg.id} style={{ scrollSnapAlign: "start" }}>
+            <div key={pkg.id} className="snap-start">
               <UpcomingTravelCard package={pkg} />
             </div>
           ))}

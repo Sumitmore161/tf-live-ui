@@ -1,74 +1,91 @@
 "use client";
 
-import React, { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { supabase } from "@/lib/supabase"; 
 
-export const SignUpForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+const signUpSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  confirmPassword: z.string().min(6, { message: "Please confirm your password" }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
+export function SignUpForm() {
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        // This ensures the user is redirected back to your site after email confirmation
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: { email: "", password: "", confirmPassword: "" },
+  });
+
+  async function onSubmit(values: z.infer<typeof signUpSchema>) {
+    setServerError(null);
+    const { data, error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
     });
 
     if (error) {
-      setMessage(error.message);
+      setServerError(error.message);
     } else {
-      setMessage("Success! Please check your email for the confirmation link.");
+      setIsSuccess(true);
     }
-    setLoading(false);
-  };
+  }
+
+  if (isSuccess) {
+    return (
+      <div className="text-center p-6 bg-green-50 rounded-lg">
+        <h3 className="text-lg font-semibold text-green-600">Account created!</h3>
+        <p className="text-sm text-gray-600 mt-2">Check your email for a confirmation link.</p>
+      </div>
+    );
+  }
 
   return (
-    <form onSubmit={handleSignUp} className="space-y-4 py-4">
-      <div className="space-y-2">
-        <Label htmlFor="signup-email">Email</Label>
-        <Input 
-          id="signup-email" 
-          type="email" 
-          placeholder="name@example.com" 
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required 
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="signup-password">Password</Label>
-        <Input 
-          id="signup-password" 
-          type="password" 
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required 
-        />
-      </div>
-      {message && (
-        <p className={`text-sm ${message.includes("Success") ? "text-green-600" : "text-red-500"}`}>
-          {message}
-        </p>
-      )}
-      <Button 
-        type="submit" 
-        className="w-full bg-[#F17235] hover:bg-[#d9622d]" 
-        disabled={loading}
-      >
-        {loading ? "Creating account..." : "Create Account"}
-      </Button>
-    </form>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {serverError && <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-md">{serverError}</div>}
+        <FormField control={form.control} name="email" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <FormControl><Input placeholder="traveler@example.com" {...field} /></FormControl>
+            <FormMessage />
+          </FormItem>
+        )} />
+        <FormField control={form.control} name="password" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Password</FormLabel>
+            <FormControl><Input type="password" placeholder="••••••••" {...field} /></FormControl>
+            <FormMessage />
+          </FormItem>
+        )} />
+        <FormField control={form.control} name="confirmPassword" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Confirm Password</FormLabel>
+            <FormControl><Input type="password" placeholder="••••••••" {...field} /></FormControl>
+            <FormMessage />
+          </FormItem>
+        )} />
+        <Button type="submit" className="w-full bg-[#F17235] hover:bg-[#d9622d]" disabled={form.formState.isSubmitting}>
+          {form.formState.isSubmitting ? "Creating account..." : "Sign Up"}
+        </Button>
+      </form>
+    </Form>
   );
-};
+}

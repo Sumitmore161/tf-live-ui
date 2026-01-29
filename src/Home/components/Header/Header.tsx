@@ -2,11 +2,11 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from "@/context/AuthContext" // 1. Import the hook
-import { LoginModal } from "@/Home/components/LoginModal" // 2. Import your modal
+import { AuthenticationModel } from "@/Home/components/AuthenticationModel"
 import { Button } from "@/components/ui/button"
 
 const Header = () => {
-  const { user, isAuthenticated , signOut} = useAuth(); // 3. Consume Auth state
+  const { user, isAuthenticated, signOut } = useAuth(); // 3. Consume Auth state
 
   const navLinks = [
     { name: 'Home', href: '/', active: true },
@@ -17,6 +17,9 @@ const Header = () => {
   ]
 
   const [activeLink, setActiveLink] = useState('Home')
+  const username = user?.email
+    ? user.email.split("@")[0]
+    : "User";
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 bg-white shadow-sm md:px-16">
@@ -50,30 +53,32 @@ const Header = () => {
 
       {/* Auth Section */}
       <div className="flex items-center gap-6">
-        <Link href="#" className="hidden sm:block text-sm font-medium text-[#2D3142] hover:text-[#F17235]">
+        {/* <Link href="#" className="hidden sm:block text-sm font-medium text-[#2D3142] hover:text-[#F17235]">
           Help
-        </Link>
+        </Link> */}
 
         {isAuthenticated ? (
           // 4. Show User Profile / Logout if logged in
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-[#2D3142]">
-              Hi, {user?.email}
+          <div className="flex items-center justify-center gap-4">
+            <span className="text-sm font-medium text-[#2D3142]  leading-none cursor-pointer">
+              Hi, {user?.email?.split("@")[0]}
             </span>
-            <button 
+
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={signOut}
-              className="text-sm font-medium text-red-500 hover:text-red-600"
+              className="text-red-500 hover:text-red-600 cursor-pointer"
             >
               Logout
-            </button>
+            </Button>
           </div>
+
         ) : (
           // 5. Show Sign Up and Login Modal if logged out
           <>
-            {/* <Link href="#" className="hidden sm:block text-sm font-medium text-[#2D3142] hover:text-[#F17235]">
-              Sign up
-            </Link> */}
-            <LoginModal /> 
+            <AuthenticationModel vt={"signup"} />
+            <AuthenticationModel vt={"login"} />
           </>
         )}
       </div>

@@ -1,6 +1,6 @@
 "use client";
 // Home/Sections/TravelForEvents/index.tsx
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { UpcomingTravelCard } from "@/Home/components/";
 import { TravelPackage } from "@/types/travelPackageType";
@@ -12,6 +12,9 @@ interface TravelForEventsProps {
 
 export default function TravelForEvents({ events }: TravelForEventsProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+
+  const categories = ['ALL', 'SPORTS', 'THEATRE', 'CONCERT', 'RACING'];
 
   const scroll = (direction: "left" | "right") => {
     if (!scrollContainerRef.current) return;
@@ -21,10 +24,17 @@ export default function TravelForEvents({ events }: TravelForEventsProps) {
       behavior: "smooth",
     });
   };
-  // 1. Filter: Only show high-intent travel categories 
+
+  // 1. Filter: Based on selected category
   // 2. Map: Convert Supabase fields to UI-friendly fields
   const displayPackages = events
-    .filter((event) => ["RACING", "SPORTS", "CONCERT"].includes(event.category))
+    .filter((event) => {
+      const allowedCategories = ['RACING', 'SPORTS', 'CONCERT', 'THEATRE'];
+      if (selectedCategory === 'ALL') {
+        return allowedCategories.includes(event.category);
+      }
+      return event.category === selectedCategory;
+    })
     .map((event) => {
       // Calculate date range string (e.g., "Apr 10 – Apr 12")
       const start = new Date(event.start_date);
@@ -86,6 +96,20 @@ export default function TravelForEvents({ events }: TravelForEventsProps) {
               <ChevronRight className="h-5 w-5" />
             </Button>
           </div>
+        </div>
+
+        {/* Category Filter Buttons */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <Button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              variant={selectedCategory === category ? "default" : "outline"}
+              className="rounded-full px-4 py-2 text-sm font-medium transition-all"
+            >
+              {category}
+            </Button>
+          ))}
         </div>
 
         {/* Horizontal Scroll Grid */}

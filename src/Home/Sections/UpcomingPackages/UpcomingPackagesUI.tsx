@@ -129,7 +129,7 @@ export default function UpcomingTravel() {
         {/* Carousel */}
         <div
           ref={scrollContainerRef}
-          className="scrollbar-hide -mx-4 flex gap-4 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          className="flex gap-6 overflow-x-auto py-8 px-4 sm:mx-0 sm:px-0 no-scrollbar snap-x snap-mandatory"
           role="region"
           aria-label="Upcoming travel packages carousel"
           style={{
@@ -137,14 +137,11 @@ export default function UpcomingTravel() {
             WebkitOverflowScrolling: "touch",
           }}
         >
-          <div className="flex gap-6 overflow-x-auto py-8 px-4 sm:mx-0 sm:px-0 no-scrollbar snap-x snap-mandatory">
-              {upcomingPackages.map((pkg) => (
+          {upcomingPackages.map((pkg) => (
             <div key={pkg.id} style={{ scrollSnapAlign: "start" }}>
               <UpcomingTravelCard package={pkg} />
             </div>
-            ))}
-          </div>
-          
+          ))}
         </div>
 
         {/* Mobile Scroll Hint */}

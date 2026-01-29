@@ -30,7 +30,7 @@ interface TravelPackageCardProps {
 export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardProps) {
     const Icon = pkg.ctaTitle === "Book Now" ? Ticket : Bell;
     return (
-        <article className="group relative flex w-[300px] shrink-0 flex-col overflow-hidden rounded-xl bg-card transition-transform duration-300 hover:scale-[1.02]">
+        <article className="group relative flex h-[542px] w-[300px] shrink-0 flex-col overflow-hidden rounded-xl bg-card transition-transform duration-300 hover:scale-[1.02]">
             {/* Image Container */}
             <div className="relative h-[200px] overflow-hidden">
                 <img

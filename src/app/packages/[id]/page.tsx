@@ -2,8 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Calendar, MapPin, Clock, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { travelPackagesData } from "@/data/travelPackagesData";
-
+import { getEvents } from "@/lib/data-service";
 interface PackagePageProps {
     params: Promise<{
         id: string;
@@ -11,14 +10,15 @@ interface PackagePageProps {
 }
 
 export default async function PackageDetailPage(props: PackagePageProps) {
+    
+    const events = await getEvents();
     const params = await props.params;
 
-    const pkg = travelPackagesData.find((p) => p.id === params.id);
+    const pkg = events.find((p) => p.id === params.id);
 
     if (!pkg) {
         return notFound();
     }
-
     return (
         <main className="min-h-screen bg-background">
             {/* Hero Section with Image */}
@@ -48,7 +48,7 @@ export default async function PackageDetailPage(props: PackagePageProps) {
                         <div className="rounded-xl bg-card border border-border p-6 shadow-lg lg:p-8">
                             <div className="mb-4 flex items-center gap-3">
                                 <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase">
-                                    {pkg.eventType}
+                                    {pkg.category}
                                 </span>
                                 <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-foreground uppercase">
                                     {pkg.status}
@@ -60,11 +60,11 @@ export default async function PackageDetailPage(props: PackagePageProps) {
                             <div className="flex flex-wrap gap-6 text-muted-foreground border-y border-border py-4 mb-6">
                                 <div className="flex items-center gap-2">
                                     <MapPin className="h-5 w-5 text-primary" />
-                                    <span>{pkg.location.city}, {pkg.location.country}</span>
+                                    <span>{pkg.city}, {pkg.country}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Calendar className="h-5 w-5 text-primary" />
-                                    <span>{pkg.dateRange}</span>
+                                    <span>{pkg.start_date} - {pkg.end_date}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Clock className="h-5 w-5 text-primary" />
@@ -95,7 +95,7 @@ export default async function PackageDetailPage(props: PackagePageProps) {
                         <div className="sticky top-6 rounded-xl bg-card border border-border p-6 shadow-lg">
                             <p className="text-sm text-muted-foreground mb-1">Starting from</p>
                             <div className="mb-6 flex items-baseline gap-1">
-                                <span className="text-3xl font-bold">₹{pkg.startingPrice.toLocaleString("en-IN")}</span>
+                                <span className="text-3xl font-bold">₹{pkg.current_price?.toLocaleString("en-IN")}</span>
                                 <span className="text-sm text-muted-foreground">/ person</span>
                             </div>
 

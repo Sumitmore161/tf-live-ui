@@ -25,15 +25,26 @@ export default function TravelForEvents({ events }: TravelForEventsProps) {
     });
   };
 
-  // 1. Filter: Based on selected category
+  // Date filtering logic
+  const today = new Date();
+  const oneMonthFromNow = new Date(today);
+  oneMonthFromNow.setDate(today.getDate() + 30);
+
+  // 1. Filter: Based on date range (today to 30 days) and selected category
   // 2. Map: Convert Supabase fields to UI-friendly fields
   const displayPackages = events
     .filter((event) => {
+      // Date range filter: start_date must be between today and 30 days from now
+      const startDate = new Date(event.start_date);
+      const isInDateRange = startDate >= today && startDate <= oneMonthFromNow;
+      
+      // Category filter
       const allowedCategories = ['RACING', 'SPORTS', 'CONCERT', 'THEATRE'];
-      if (selectedCategory === 'ALL') {
-        return allowedCategories.includes(event.category);
-      }
-      return event.category === selectedCategory;
+      const matchesCategory = selectedCategory === 'ALL' 
+        ? allowedCategories.includes(event.category)
+        : event.category === selectedCategory;
+      
+      return isInDateRange && matchesCategory;
     })
     .map((event) => {
       // Calculate date range string (e.g., "Apr 10 – Apr 12")
@@ -43,19 +54,9 @@ export default function TravelForEvents({ events }: TravelForEventsProps) {
 
       return {
         ...event,
-        // Map DB fields to UI Component names
-        image: event.image_url || "https://placehold.co/600x400/png", // Fallback for null images
-        eventType: event.category.toLowerCase(), // "RACING" -> "racing"
-        location: {
-          city: event.city,
-          country: event.country,
-        },
-        dateRange: dateRange,
-        startingPrice: event.current_price || 0,
-        duration: event.duration || "4D / 3N", // Default fallback
-        status: event.status || "coming-soon", // Logic could be added to set based on dates
-        // ctaTitle: event.current_price && event.current_price > 0 ? "Book Now" : "Notify Me",
-        ctaTitle: "Book Now",
+        status: event.status || "coming-soon",
+        ctaTitle: event.ctaTitle || "Book Now",
+        duration: event.duration || "4D / 3N",
       };
     });
 
@@ -119,8 +120,7 @@ export default function TravelForEvents({ events }: TravelForEventsProps) {
         >
           {displayPackages.map((pkg) => (
             <div key={pkg.id} className="snap-start">
-              {/* Ensure the card gets the transformed pkg object */}
-              <UpcomingTravelCard package={pkg as any} />
+              <UpcomingTravelCard package={pkg} />
             </div>
           ))}
         </div>

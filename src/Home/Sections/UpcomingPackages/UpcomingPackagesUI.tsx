@@ -1,81 +1,75 @@
 "use client"
 
+/**
+ * Parent Integration Example:
+ * In app/page.tsx:
+ * 
+ * import { getEvents } from "@/lib/data-service";
+ * import UpcomingTravel from "@/Home/Sections/UpcomingPackages/UpcomingPackagesUI";
+ * 
+ * export default async function Home() {
+ *   const events = await getEvents();
+ *   return <UpcomingTravel events={events} />;
+ * }
+ */
+
 import { useRef } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { UpcomingTravelCard, type TravelPackage } from "@/Home/components/"
 import { Button } from "@/components/ui/button"
 
-const upcomingPackages = [
-  {
-    id: "1",
-    title: "Coldplay Music of the Spheres World Tour 2026",
-    eventType: "concert",
-    status: "high-demand",
-    image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=400&fit=crop",
-    location: { city: "Mumbai", country: "India" },
-    dateRange: "Jan 18 - 21, 2026",
-    startingPrice: 85000,
-    duration: "4D / 3N",
-  },
-  {
-    id: "2",
-    title: "Formula 1 Singapore Grand Prix 2026",
-    eventType: "racing",
-    status: "coming-soon",
-    image: "https://images.unsplash.com/photo-1504707748692-419802cf939d?w=600&h=400&fit=crop",
-    location: { city: "Singapore", country: "Singapore" },
-    dateRange: "Sep 18 - 20, 2026",
-    startingPrice: 125000,
-    duration: "5D / 4N",
-  },
-  {
-    id: "3",
-    title: "ICC T20 World Cup Finals 2026",
-    eventType: "sports",
-    status: "opening-soon",
-    image: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600&h=400&fit=crop",
-    location: { city: "Melbourne", country: "Australia" },
-    dateRange: "Nov 8 - 15, 2026",
-    startingPrice: 175000,
-    duration: "8D / 7N",
-  },
-  {
-    id: "4",
-    title: "Ed Sheeran Mathematics Tour Asia",
-    eventType: "concert",
-    status: "coming-soon",
-    image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop",
-    location: { city: "Bangkok", country: "Thailand" },
-    dateRange: "Mar 12 - 14, 2026",
-    startingPrice: 65000,
-    duration: "3D / 2N",
-  },
-  {
-    id: "5",
-    title: "MotoGP Qatar Grand Prix 2026",
-    eventType: "racing",
-    status: "high-demand",
-    image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=600&h=400&fit=crop",
-    location: { city: "Doha", country: "Qatar" },
-    dateRange: "Mar 6 - 8, 2026",
-    startingPrice: 95000,
-    duration: "4D / 3N",
-  },
-  {
-    id: "6",
-    title: "IPL 2026 Finals Experience",
-    eventType: "sports",
-    status: "coming-soon",
-    image: "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=600&h=400&fit=crop",
-    location: { city: "Ahmedabad", country: "India" },
-    dateRange: "May 28 - 30, 2026",
-    startingPrice: 55000,
-    duration: "3D / 2N",
-  },
-]
+interface UpcomingTravelProps {
+  events: TravelPackage[]
+}
 
-export default function UpcomingTravel() {
+export default function UpcomingTravel({ events }: UpcomingTravelProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  // Date filtering logic
+  const today = new Date()
+  const oneMonthFromNow = new Date(today)
+  oneMonthFromNow.setDate(today.getDate() + 30)
+  const twoMonthsFromNow = new Date(today)
+  twoMonthsFromNow.setDate(today.getDate() + 60)
+
+  // Filter and sort events within 1-2 month window (30-60 days from today)
+  const filteredEvents = events
+    .filter((event) => {
+      const startDate = new Date(event.start_date)
+      return startDate >= oneMonthFromNow && startDate <= twoMonthsFromNow
+    })
+    .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
+
+  // Map filtered events to display format
+  const displayPackages = filteredEvents.map((event) => {
+    const startDateObj = new Date(event.start_date);
+const endDateObj = new Date(event.end_date);
+
+const dateRange = `${startDateObj.toLocaleDateString('en-US', { 
+  month: 'short', 
+  day: 'numeric' 
+})} - ${endDateObj.toLocaleDateString('en-US', { 
+  month: 'long', 
+  day: 'numeric', 
+  year: 'numeric' 
+})}`;
+    // console.log('Mapping event to display package dateRange:', dateRange)
+    return {
+      id: event.id,
+      title: event.title,
+      image: event.image_url || "/placeholder.svg",
+      location: {
+        city: event.city,//for the next 60 days 
+        country: event.country,
+      },
+      eventType: event.category.toLowerCase(),
+      dateRange,
+      startingPrice: event.current_price,
+      duration: event.duration,
+      status: "high-demand" as const,
+      ctaTitle: "Book Now",
+    }
+  })
 
   const scroll = (direction: "left" | "right") => {
     if (!scrollContainerRef.current) return
@@ -137,7 +131,7 @@ export default function UpcomingTravel() {
             WebkitOverflowScrolling: "touch",
           }}
         >
-          {upcomingPackages.map((pkg) => (
+          {displayPackages.map((pkg) => (
             <div key={pkg.id} style={{ scrollSnapAlign: "start" }}>
               <UpcomingTravelCard package={pkg} />
             </div>

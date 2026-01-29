@@ -33,7 +33,7 @@ const HomeUI = ({ events }: HomeUIProps) => {
         <TopArtists />
       </section>
       <section className='section-container'>
-        <UpcomingPackages />
+        <UpcomingPackages events={events} />
       </section>
       <section className='section-container'>
         <WhyTravelWithUs />

@@ -26,6 +26,7 @@ const images = [
   }
 ]
 
+
 const HeroUI = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState(0)

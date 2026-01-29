@@ -4,120 +4,63 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Search, MapPin, Calendar, ChevronDown, AlertCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { generateAllowedDates } from '@/Home/utils/SearchBarUtilities'
-const categories = [
-  {
-    category: "Racing Tournaments",
-    events: [
-      {
-        destination: {
-          city: "Monza",
-          country: "Italy"
-        },
-        startDate: "2026-09-05",
-        endDate: "2026-09-07"
-      },
-      {
-        destination: {
-          city: "Silverstone",
-          country: "UK"
-        },
-        startDate: "2026-07-10",
-        endDate: "2026-07-12"
-      }
-    ]
-  },
-  {
-    category: "Artist Concert",
-    events: [
-      {
-        destination: {
-          city: "Mumbai",
-          country: "India"
-        },
-        startDate: "2026-03-18",
-        endDate: "2026-03-18"
-      },
-      {
-        destination: {
-          city: "Los Angeles",
-          country: "USA"
-        },
-        startDate: "2026-06-01",
-        endDate: "2026-06-01"
-      }
-    ]
-  },
-  {
-    category: "Sports (Cricket, Football)",
-    events: [
-      {
-        destination: {
-          city: "Melbourne",
-          country: "Australia"
-        },
-        startDate: "2026-02-12",
-        endDate: "2026-02-16"
-      },
-      {
-        destination: {
-          city: "Madrid",
-          country: "Spain"
-        },
-        startDate: "2026-04-22",
-        endDate: "2026-04-22"
-      }
-    ]
-  },
-  {
-    category: "Stand Up – Local Shows",
-    events: [
-      {
-        destination: {
-          city: "Bengaluru",
-          country: "India"
-        },
-        startDate: "2026-01-30",
-        endDate: "2026-01-30"
-      },
-      {
-        destination: {
-          city: "Pune",
-          country: "India"
-        },
-        startDate: "2026-02-14",
-        endDate: "2026-02-14"
-      }
-    ]
-  }
-];
+import { TravelPackage } from '@/Home/components'
 
+interface SearchBarProps {
+  events: TravelPackage[];
+}
 
-const SearchBar = () => {
+const SearchBar = ({events}: SearchBarProps) => {
   const [category, setCategory] = useState("")
   const [destination, setDestination] = useState("")
   const [date, setDate] = useState("")
   const [isOpen, setIsOpen] = useState(false)
   const [showError, setShowError] = useState(false)
 
-  const selectedCategoryObj = categories.find(
-    (c) => c.category === category
+  // Extract unique categories from events
+  const categories = Array.from(new Set(events.map(event => event.category))).filter(Boolean);
+
+  // Filter events by selected category
+  const categoryEvents = category ? events.filter(event => event.category === category) : [];
+
+  // Extract unique destinations for the selected category
+  const destinations = Array.from(
+    new Set(
+      categoryEvents.map(event => `${event.city}, ${event.country}`)
+    )
   );
 
-  const destinations =
-    selectedCategoryObj?.events.map(
-      (e) => `${e.destination.city}, ${e.destination.country}`
-    ) || [];
+  // Find matching events for selected destination
+  const matchingEvents = destination 
+    ? categoryEvents.filter(event => `${event.city}, ${event.country}` === destination)
+    : [];
 
-
-  const matchingEvents =
-    selectedCategoryObj?.events.filter(
-      (e) =>
-        `${e.destination.city}, ${e.destination.country}` === destination
-    ) || [];
-
-  const allowedDates = generateAllowedDates(matchingEvents);
+  // Calculate allowed dates (1 and 2 days before start_date)
+  const allowedDates = matchingEvents.flatMap(event => {
+    const startDate = new Date(event.start_date);
+    const oneDayBefore = new Date(startDate);
+    oneDayBefore.setDate(startDate.getDate() - 1);
+    const twoDaysBefore = new Date(startDate);
+    twoDaysBefore.setDate(startDate.getDate() - 2);
+    
+    return [
+      twoDaysBefore.toISOString().split('T')[0],
+      oneDayBefore.toISOString().split('T')[0]
+    ];
+  }).filter((date, index, self) => self.indexOf(date) === index).sort();
 
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Reset dependent fields when category changes
+  useEffect(() => {
+    setDestination("")
+    setDate("")
+  }, [category])
+
+  // Reset date when destination changes
+  useEffect(() => {
+    setDate("")
+  }, [destination])
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -172,15 +115,15 @@ const SearchBar = () => {
                 >
                   {categories.map((cat) => (
                     <button
-                      key={cat.category}
+                      key={cat}
                       onClick={() => {
-                        setCategory(cat.category)
+                        setCategory(cat)
                         setIsOpen(false)
                         setShowError(false)
                       }}
                       className="w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-[#F17235]/10 hover:text-[#F17235] rounded-xl transition-colors"
                     >
-                      {cat.category}
+                      {cat}
                     </button>
                   ))}
                 </motion.div>

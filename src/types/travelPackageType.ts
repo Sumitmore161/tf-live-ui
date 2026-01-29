@@ -30,4 +30,4 @@ export interface TravelPackage {
   status?: StatusType;
   duration?: string;
   ctaTitle?: string;
-}
+} 

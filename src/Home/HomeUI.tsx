@@ -21,7 +21,7 @@ const HomeUI = ({ events }: HomeUIProps) => {
   return (
     <>
       <section className='section-container'>
-        <SearchBar />
+        <SearchBar events={events} />
       </section>
       <section className='section-container'>
         <HeroUI />

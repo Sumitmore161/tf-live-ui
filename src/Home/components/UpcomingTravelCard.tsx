@@ -92,12 +92,20 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
                 {/* Price and Duration */}
                 <div className="mt-auto flex items-center justify-between border-t border-border pt-3">
                     <div>
-                        <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                            From
-                        </p>
-                        <p className="text-lg font-bold text-primary">
-                            ₹{(pkg.current_price || 0).toLocaleString("en-IN")}*
-                        </p>
+                        {pkg.current_price ? (
+                            <>
+                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                    From
+                                </p>
+                                <p className="text-lg font-bold text-primary">
+                                    ₹{pkg.current_price.toLocaleString("en-IN")}*
+                                </p>
+                            </>
+                        ) : (
+                            <p className="text-sm font-semibold text-muted-foreground">
+                                Contact for price
+                            </p>
+                        )}
                     </div>
                     {pkg.duration && (
                         <div className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5">

@@ -30,9 +30,6 @@ const HomeUI = ({ events }: HomeUIProps) => {
         <TravelForEventsUI events={events} />
       </section>
       <section className='section-container'>
-        <TopArtists />
-      </section>
-      <section className='section-container'>
         <UpcomingPackages events={events} />
       </section>
       <section className='section-container'>

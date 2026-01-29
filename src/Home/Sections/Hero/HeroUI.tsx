@@ -8,21 +8,21 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 const images = [
   {
     id: 1,
-    url: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070&auto=format&fit=crop',
-    title: 'Experience the Unforgettable',
-    subtitle: 'Book your next adventure with exclusive event packages.'
+    url: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea',
+    title: 'Feel the Pulse of the Night',
+    subtitle: 'From the front row to the final encore, secure your spot at the world’s most electrifying performances.'
   },
   {
     id: 2,
-    url: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop',
+    url: 'https://images.unsplash.com/photo-1679865745026-24ca998bee72',
     title: 'Discover New Horizons',
-    subtitle: 'From mountain peaks to crystal clear waters.'
+    subtitle: 'Book your next Racing Tournament with exclusive event packages.'
   },
   {
     id: 3,
-    url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop',
-    title: 'Your Dream Escape',
-    subtitle: 'Luxury destinations curated just for you.'
+    url: 'https://images.unsplash.com/photo-1652513842544-ca66b676757a',
+    title: 'Live in the Fast Lane',
+    subtitle: 'Real speed. Real drama. Real-time access to every Grand Prix on the map.'
   }
 ]
 

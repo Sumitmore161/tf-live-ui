@@ -18,6 +18,8 @@ import { supabase } from "@/lib/supabase";
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
+  // Added City validation
+  city: z.string().min(2, { message: "City must be at least 2 characters" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   confirmPassword: z.string().min(6, { message: "Please confirm your password" }),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -31,7 +33,12 @@ export function SignUpForm() {
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: { email: "", password: "", confirmPassword: "" },
+    defaultValues: { 
+        email: "", 
+        city: "", // Initialize city
+        password: "", 
+        confirmPassword: "" 
+    },
   });
 
   async function onSubmit(values: z.infer<typeof signUpSchema>) {
@@ -39,6 +46,12 @@ export function SignUpForm() {
     const { data, error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
+      // Store the city in user_metadata
+      options: {
+        data: {
+          city: values.city,
+        },
+      },
     });
 
     if (error) {
@@ -61,6 +74,7 @@ export function SignUpForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {serverError && <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-md">{serverError}</div>}
+        
         <FormField control={form.control} name="email" render={({ field }) => (
           <FormItem>
             <FormLabel>Email</FormLabel>
@@ -68,6 +82,16 @@ export function SignUpForm() {
             <FormMessage />
           </FormItem>
         )} />
+
+        {/* --- NEW CITY FIELD --- */}
+        <FormField control={form.control} name="city" render={({ field }) => (
+          <FormItem>
+            <FormLabel>City</FormLabel>
+            <FormControl><Input placeholder="e.g. New York" {...field} /></FormControl>
+            <FormMessage />
+          </FormItem>
+        )} />
+
         <FormField control={form.control} name="password" render={({ field }) => (
           <FormItem>
             <FormLabel>Password</FormLabel>
@@ -75,6 +99,7 @@ export function SignUpForm() {
             <FormMessage />
           </FormItem>
         )} />
+
         <FormField control={form.control} name="confirmPassword" render={({ field }) => (
           <FormItem>
             <FormLabel>Confirm Password</FormLabel>
@@ -82,6 +107,7 @@ export function SignUpForm() {
             <FormMessage />
           </FormItem>
         )} />
+
         <Button type="submit" className="w-full bg-[#F17235] hover:bg-[#d9622d]" disabled={form.formState.isSubmitting}>
           {form.formState.isSubmitting ? "Creating account..." : "Sign Up"}
         </Button>

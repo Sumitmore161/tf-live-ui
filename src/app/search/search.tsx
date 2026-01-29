@@ -3,44 +3,30 @@
 import { useMemo, useState } from "react"
 import { EmptyState, PackageCard, SearchHeader, FilterSidebar } from "./components"
 import { TravelPackage } from "@/types/travelPackageType"
-
+import { useSearchParams } from 'next/navigation' 
 // Helper to format date for display (travel dates are 1-2 days before event)
 function getTravelDates(startDate: string): string[] {
   const eventDate = new Date(startDate)
   const dates: string[] = []
 
-  // 2 days before
-  const twoDaysBefore = new Date(eventDate)
-  twoDaysBefore.setDate(eventDate.getDate() - 2)
-  dates.push(
-    twoDaysBefore.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    })
-  )
+  const d1 = new Date(eventDate); d1.setDate(eventDate.getDate() - 1);
+  const d2 = new Date(eventDate); d2.setDate(eventDate.getDate() - 2);
 
-  // 1 day before
-  const oneDayBefore = new Date(eventDate)
-  oneDayBefore.setDate(eventDate.getDate() - 1)
-  dates.push(
-    oneDayBefore.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    })
-  )
-
-  return dates
+  // Return YYYY-MM-DD to match the home page SearchBar
+  return [
+    d2.toISOString().split('T')[0],
+    d1.toISOString().split('T')[0]
+  ]
 }
 interface SearchResultsPageProps {
     events: TravelPackage[];
 }
 export default function SearchResultsPage({ events }: SearchResultsPageProps) {
   // Search header state
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [selectedDestination, setSelectedDestination] = useState<string | null>(null)
-  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const searchParams = useSearchParams();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(searchParams.get('category'))
+  const [selectedDestination, setSelectedDestination] = useState<string | null>(searchParams.get('destination'))
+  const [selectedDate, setSelectedDate] = useState<string | null>(searchParams.get('date'))
 
   // Filter sidebar state
   const [destinationFilter, setDestinationFilter] = useState<string | null>(null)

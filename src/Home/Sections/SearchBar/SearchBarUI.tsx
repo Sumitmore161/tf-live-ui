@@ -5,7 +5,7 @@ import { Search, MapPin, Calendar, ChevronDown, AlertCircle } from 'lucide-react
 import { motion, AnimatePresence } from 'framer-motion'
 import { generateAllowedDates } from '@/Home/utils/SearchBarUtilities'
 import { TravelPackage } from '@/Home/components'
-
+import { useRouter } from 'next/navigation'
 interface SearchBarProps {
   events: TravelPackage[];
 }
@@ -17,6 +17,7 @@ const SearchBar = ({events}: SearchBarProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [showError, setShowError] = useState(false)
 
+  const router = useRouter()
   // Extract unique categories from events
   const categories = Array.from(new Set(events.map(event => event.category))).filter(Boolean);
 
@@ -81,6 +82,12 @@ const SearchBar = ({events}: SearchBarProps) => {
     setShowError(false)
     console.log("Searching for:", { category, destination, date })
     // Implement actual search logic here
+    const params = new URLSearchParams()
+    if (category) params.set('category', category)
+    if (destination) params.set('destination', destination)
+    if (date) params.set('date', date)
+    
+    router.push(`/search?${params.toString()}`)
   }
 
   const isSearchDisabled = !category

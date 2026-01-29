@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, MapPin, Clock, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getEvents } from "@/lib/data-service";
 import { BookNowButton } from "@/Home/components/Booking/BookNowButton";
+import { ItineraryDialog } from "@/app/itinerary/components/ItineraryDialog";
 interface PackagePageProps {
     params: Promise<{
         id: string;
@@ -105,8 +106,8 @@ export default async function PackageDetailPage(props: PackagePageProps) {
                                     packageTitle={pkg.title}
                                     price={pkg.current_price || 0}
                                 />
-                                <Button variant="outline" className="w-full cursor-pointer">Download Itinerary</Button>
-                            </div>
+                                <ItineraryDialog toCity={pkg.city} />
+                            </div>  
 
                             <p className="mt-4 text-xs text-center text-muted-foreground">
                                 *Prices are subject to availability.

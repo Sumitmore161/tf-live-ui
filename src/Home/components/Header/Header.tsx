@@ -70,9 +70,9 @@ const Header = () => {
         ) : (
           // 5. Show Sign Up and Login Modal if logged out
           <>
-            <Link href="#" className="hidden sm:block text-sm font-medium text-[#2D3142] hover:text-[#F17235]">
+            {/* <Link href="#" className="hidden sm:block text-sm font-medium text-[#2D3142] hover:text-[#F17235]">
               Sign up
-            </Link>
+            </Link> */}
             <LoginModal /> 
           </>
         )}

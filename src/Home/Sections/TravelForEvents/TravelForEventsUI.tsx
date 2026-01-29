@@ -15,6 +15,7 @@ const packages = [
     dateRange: "Nov 20 – Nov 22",
     startingPrice: 89999,
     duration: "3D / 2N",
+    ctaTitle: "Book Now",
     href: "#",
   },
   {
@@ -31,6 +32,7 @@ const packages = [
     dateRange: "Jul 1 – Jul 14",
     startingPrice: 149999,
     duration: "5D / 4N",
+    ctaTitle: "Book Now",
     href: "#",
   },
   {
@@ -47,6 +49,7 @@ const packages = [
     dateRange: "May 31 – Jun 2",
     startingPrice: 229999,
     duration: "4D / 3N",
+    ctaTitle: "Book Now",
     href: "#",
   },
   {
@@ -63,6 +66,7 @@ const packages = [
     dateRange: "May 31 – Jun 2",
     startingPrice: 229999,
     duration: "4D / 3N",
+    ctaTitle: "Book Now",
     href: "#",
   },
   {
@@ -79,6 +83,7 @@ const packages = [
     dateRange: "May 31 – Jun 2",
     startingPrice: 229999,
     duration: "4D / 3N",
+    ctaTitle: "Book Now",
     href: "#",
   },
 ]

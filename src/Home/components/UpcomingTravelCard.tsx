@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Bell, Calendar, Clock, MapPin } from "lucide-react"
+import { Bell, Calendar, Clock, MapPin, Ticket, ArrowRight } from "lucide-react"
 import { TravelPackage, EventType, StatusType } from "@/types/travelPackageType"
 
 const eventTypeIcons: Record<EventType, string> = {
@@ -28,6 +28,7 @@ interface TravelPackageCardProps {
 }
 
 export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardProps) {
+    const Icon = pkg.ctaTitle === "Book Now" ? Ticket : Bell;
     return (
         <article className="group relative flex w-[300px] shrink-0 flex-col overflow-hidden rounded-xl bg-card transition-transform duration-300 hover:scale-[1.02]">
             {/* Image Container */}
@@ -38,7 +39,7 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/5 to-transparent" />
 
                 {/* Status Tag */}
                 <span
@@ -96,8 +97,9 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
                         variant="outline"
                         className="w-full gap-2 border-primary/30 text-foreground hover:bg-primary hover:text-primary-foreground bg-transparent"
                     >
-                        <Bell className="h-4 w-4" aria-hidden="true" />
-                        <span>Notify Me</span>
+                        {/* 2. Render the dynamic icon */}
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                        <span>{pkg.ctaTitle || "Notify Me"}</span>
                     </Button>
                 </Link>
             </div>

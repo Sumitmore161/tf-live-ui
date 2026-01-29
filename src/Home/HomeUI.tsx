@@ -10,7 +10,14 @@ import {
   WhyTravelWithUs,
   TravelForEventsUI
 } from "@/Home/Sections"
-const HomeUI = () => {
+import { TravelPackage } from '@/types/travelPackageType'
+
+interface HomeUIProps {
+  events: TravelPackage[];
+}
+
+const HomeUI = ({ events }: HomeUIProps) => {
+  // console.log('Rendering HomeUI with events:', events);
   return (
     <>
       <section className='section-container'>

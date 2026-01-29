@@ -44,7 +44,7 @@ export default function TravelForEvents({ events }: TravelForEventsProps) {
       return {
         ...event,
         // Map DB fields to UI Component names
-        image: event.image_url || "/placeholder.svg", // Fallback for null images
+        image: event.image_url || "https://placehold.co/600x400/png", // Fallback for null images
         eventType: event.category.toLowerCase(), // "RACING" -> "racing"
         location: {
           city: event.city,

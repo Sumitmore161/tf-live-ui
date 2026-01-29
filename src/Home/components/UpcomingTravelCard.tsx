@@ -34,7 +34,7 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
             {/* Image Container */}
             <div className="relative h-[200px] overflow-hidden">
                 <img
-                    src={pkg.image || "/placeholder.svg"}
+                    src={pkg.image || "https://placehold.co/600x400/png"}
                     alt={pkg.title}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
@@ -65,7 +65,7 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <MapPin className="h-4 w-4" aria-hidden="true" />
                     <span>
-                        {pkg.location.city}, {pkg.location.country}
+                        {pkg.city}, {pkg.country}
                     </span>
                 </div>
 

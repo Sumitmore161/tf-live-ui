@@ -13,7 +13,7 @@
  * }
  */
 
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { UpcomingTravelCard, type TravelPackage } from "@/Home/components/"
 import { Button } from "@/components/ui/button"
@@ -24,6 +24,9 @@ interface UpcomingTravelProps {
 
 export default function UpcomingTravel({ events }: UpcomingTravelProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string>('ALL')
+
+  const categories = ['ALL', 'SPORTS', 'THEATRE', 'CONCERT', 'RACING']
 
   // Date filtering logic
   const today = new Date()
@@ -57,13 +60,11 @@ const dateRange = `${startDateObj.toLocaleDateString('en-US', {
     return {
       id: event.id,
       title: event.title,
-      image: event.image_url || "/placeholder.svg",
-      location: {
-        city: event.city,//for the next 60 days 
-        country: event.country,
-      },
+      image: event.image_url || "https://placehold.co/600x400/png",
+      city: event.city,//for the next 60 days 
+      country: event.country,
       eventType: event.category.toLowerCase(),
-      dateRange,
+      dateRange: dateRange,
       startingPrice: event.current_price,
       duration: event.duration,
       status: "high-demand" as const,

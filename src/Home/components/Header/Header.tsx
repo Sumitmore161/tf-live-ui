@@ -14,7 +14,7 @@ const Header = () => {
     { name: 'Explore Events', href: '/search' },
     { name: 'Trending', href: '/search' },
     { name: 'destinations', href: '/search' },
-    { name: 'upcoming', href: '/search' },
+    { name: 'Contact-Us', href: '/contact-us' },
     { name: 'My Bookings', href: '/my-bookings' },
   ]
 

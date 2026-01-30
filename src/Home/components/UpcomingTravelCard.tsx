@@ -113,9 +113,12 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
                                 </p>
                             </>
                         ) : (
-                            <p className="text-sm font-semibold text-muted-foreground">
-                                Contact for price
-                            </p>
+                            <Link href="/contact-us">
+                                <p className="text-sm font-semibold cursor-pointer transition-colors duration-200" 
+                                   style={{ color: '#F17235' }}>
+                                    Contact for price →
+                                </p>
+                            </Link>
                         )}
                     </div>
                     {pkg.duration && (

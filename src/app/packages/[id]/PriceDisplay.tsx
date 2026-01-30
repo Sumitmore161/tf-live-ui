@@ -12,7 +12,10 @@ export function PriceDisplay({ price }: PriceDisplayProps) {
     return (
       <div className="mb-6">
         <Link href="/contact-us">
-          <Button variant="outline" className="w-full">
+          <Button 
+            className="w-full h-12 text-lg text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+            style={{ backgroundColor: '#F17235' }}
+          >
             Contact for Price
           </Button>
         </Link>

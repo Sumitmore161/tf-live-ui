@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, CalendarDays, Wallet, ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 
 async function fetchItinerary(params: any) {
   const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN_NAME

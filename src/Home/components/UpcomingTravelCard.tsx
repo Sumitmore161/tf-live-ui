@@ -23,15 +23,15 @@ interface TravelPackageCardProps {
 export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardProps) {
     const [imageError, setImageError] = useState(false);
     const Icon = pkg.ctaTitle === "Book Now" ? Ticket : Bell;
-    
+
     // Calculate date range from start_date and end_date
-    const dateRange = `${new Date(pkg.start_date).toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric' 
-    })} - ${new Date(pkg.end_date).toLocaleDateString('en-US', { 
-        month: 'long', 
-        day: 'numeric', 
-        year: 'numeric' 
+    const dateRange = `${new Date(pkg.start_date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+    })} - ${new Date(pkg.end_date).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
     })}`;
 
     // Get fallback image based on category
@@ -42,7 +42,7 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
         <article className="group relative flex h-[442px] w-[300px] shrink-0 flex-col overflow-hidden rounded-xl bg-card transition-transform duration-300 hover:scale-[1.02]">
             {/* Image Container */}
             <div className="relative h-[200px] overflow-hidden">
-                
+
                 <Image
                     src={imageSrc}
                     alt={pkg.title}
@@ -103,8 +103,8 @@ export default function UpcomingTravelCard({ package: pkg }: TravelPackageCardPr
                             </>
                         ) : (
                             <Link href="/contact-us">
-                                <p className="text-sm font-semibold cursor-pointer transition-colors duration-200" 
-                                   style={{ color: '#F17235' }}>
+                                <p className="text-sm font-semibold cursor-pointer transition-colors duration-200"
+                                    style={{ color: '#F17235' }}>
                                     Contact for price →
                                 </p>
                             </Link>
